@@ -2,7 +2,7 @@
 
 把 Mekanism Sun（`mekanismsun`）里 **7×7×7 多方块「人造太阳」压成一台单方块机器**的 Mekanism 附属。
 
-纯ai生成,兼容性不明
+纯ai生成,兼容性未测试
 
 ## 依赖
 
