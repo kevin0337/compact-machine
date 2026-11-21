@@ -1,0 +1,7 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "compactmekanismsun:block/compact_artificial_sun/sides",
+    "front": "compactmekanismsun:block/compact_artificial_sun/front"
+  }
+}

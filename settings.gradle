@@ -1,0 +1,27 @@
+pluginManagement {
+    repositories {
+        // neoforged.forgecdn.net 是 maven.neoforged.net 的官方 CDN 镜像（国内可直连）。
+        // 本机 maven.neoforged.net:443 被阻断，必须走这个镜像。
+        maven {
+            name = 'NeoForgedMirror'
+            url = 'https://neoforged.forgecdn.net/releases/'
+        }
+        maven {
+            name = 'TencentPublic'
+            url = 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/'
+        }
+        maven {
+            name = 'AliyunPublic'
+            url = 'https://maven.aliyun.com/repository/public/'
+        }
+        // 不用 mavenCentral()：它指向 repo1.maven.org，本机 schannel 握手失败会死等。
+        // repo.maven.apache.org 实测 200/1.5s。
+        maven {
+            name = 'MavenCentralApache'
+            url = 'https://repo.maven.apache.org/maven2/'
+        }
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'mekext'

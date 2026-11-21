@@ -1,0 +1,6 @@
+{
+  "parent": "compactmekanismsun:block/compact_artificial_sun/inactive",
+  "textures": {
+    "front": "compactmekanismsun:block/compact_artificial_sun/front_active"
+  }
+}

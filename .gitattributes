@@ -1,0 +1,17 @@
+# 统一换行：仓库里存 LF，Windows 检出时按需要转换
+* text=auto eol=lf
+
+# 二进制资源
+*.jar binary
+*.png binary
+*.ogg binary
+
+# 明确语言
+*.java text
+*.gradle text
+*.json text
+*.toml text
+*.md text
+*.properties text
+gradlew text eol=lf
+gradlew.bat text eol=crlf

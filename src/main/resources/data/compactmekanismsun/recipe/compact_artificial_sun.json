@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "mekanism:ultimate_control_circuit"
+    },
+    "b": {
+      "item": "mekanismsun:artificial_sun_casing"
+    },
+    "c": {
+      "item": "mekanism:ultimate_energy_cube"
+    }
+  },
+  "result": {
+    "id": "compactmekanismsun:compact_artificial_sun",
+    "count": 1
+  }
+}

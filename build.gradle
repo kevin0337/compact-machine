@@ -1,0 +1,126 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = "${mod_id}-neoforge-${minecraft_version}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    // maven.neoforged.net 在本机不可达，用官方 CDN 镜像代替（路径结构完全一致）。
+    maven {
+        name = 'NeoForgedMirror'
+        url = 'https://neoforged.forgecdn.net/releases/'
+    }
+    // Mekanism 在 modmaven.dev（实测可直连，12MB jar 200 OK）。
+    maven {
+        name = 'ModMaven'
+        url = 'https://modmaven.dev/'
+        content {
+            includeGroup 'mekanism'
+            includeGroup 'mezz.jei'
+        }
+    }
+    maven {
+        name = 'TencentPublic'
+        url = 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/'
+    }
+    maven {
+        name = 'AliyunPublic'
+        url = 'https://maven.aliyun.com/repository/public/'
+    }
+    maven {
+        name = 'MavenCentralApache'
+        url = 'https://repo.maven.apache.org/maven2/'
+    }
+}
+
+neoForge {
+    version = project.neo_version
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.INFO
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+// localRuntime 里的依赖只进开发运行，不进编译产物/发布依赖。
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    def mekanism = "mekanism:Mekanism:${minecraft_version}-${mekanism_version}"
+    compileOnly mekanism
+    localRuntime mekanism
+
+    // mekanismsun 没有公开 maven 坐标，直接引用工作区根目录的 jar（硬依赖）。
+    def mekanismSunJar = file(mekanismsun_jar)
+    if (!mekanismSunJar.exists()) {
+        throw new GradleException("找不到 mekanismsun jar：${mekanismSunJar.absolutePath}")
+    }
+    compileOnly files(mekanismSunJar)
+    localRuntime files(mekanismSunJar)
+}
+
+// 用模板生成 META-INF/neoforge.mods.toml，把 gradle.properties 的值填进去。
+var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description,
+            mod_url                : mod_url,
+            mekanism_version_range : mekanism_version_range,
+            mekanismsun_version_range: mekanismsun_version_range,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// moddev-gradle 的 RepositoriesPlugin 会往 repositories 里硬编码塞 maven.neoforged.net
+// （"NeoForged Releases" 与 "Mojang Meta" 两个仓库），本机该域名 443 不通。
+// 这里统一改写成本机可达的官方 CDN 镜像，路径结构完全一致。
+// 注意：必须放在 plugins 之后（本文件末尾），才会覆盖插件已加入的仓库。
+repositories.withType(MavenArtifactRepository).configureEach { repo ->
+    def currentUrl = repo.url?.toString()
+    if (currentUrl != null && currentUrl.contains('maven.neoforged.net')) {
+        repo.url = currentUrl.replace('maven.neoforged.net', 'neoforged.forgecdn.net')
+        logger.lifecycle("mekext: 仓库 '${repo.name}' 已重定向到 ${repo.url}")
+    }
+}

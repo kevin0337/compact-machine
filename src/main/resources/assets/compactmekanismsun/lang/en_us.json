@@ -1,0 +1,11 @@
+{
+  "other.compactmekanismsun.mod_name": "Compact Mekanism Sun",
+  "block.compactmekanismsun.compact_artificial_sun": "Compact Artificial Sun",
+  "description.compactmekanismsun.compact_artificial_sun": "A single-block artificial sun. Burns hydrogen into helium and generates energy. Three day modes: Burning (hold noon), Extinguished (hold night), Off.",
+  "gui.compactmekanismsun.mode.burning": "Burning (Noon)",
+  "gui.compactmekanismsun.mode.night": "Extinguished (Night)",
+  "gui.compactmekanismsun.mode.off": "Off",
+  "gui.compactmekanismsun.burn_rate": "Set Rate: %s mB/t",
+  "gui.compactmekanismsun.settings": "Sun Mode",
+  "gui.compactmekanismsun.producing": "Producing: %s/t"
+}

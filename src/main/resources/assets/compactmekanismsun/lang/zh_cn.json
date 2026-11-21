@@ -1,0 +1,11 @@
+{
+  "other.compactmekanismsun.mod_name": "紧凑人造太阳",
+  "block.compactmekanismsun.compact_artificial_sun": "紧凑型人造太阳",
+  "description.compactmekanismsun.compact_artificial_sun": "单方块形态的人造太阳。烧氢产氦并发电。可切换三种日照模式：燃烧（保持正午）、熄灭（保持夜晚）、关闭。",
+  "gui.compactmekanismsun.mode.burning": "燃烧（保持正午）",
+  "gui.compactmekanismsun.mode.night": "熄灭（保持夜晚）",
+  "gui.compactmekanismsun.mode.off": "关闭",
+  "gui.compactmekanismsun.burn_rate": "设定速率：%s mB/t",
+  "gui.compactmekanismsun.settings": "人造太阳模式",
+  "gui.compactmekanismsun.producing": "产出：%s/t"
+}
