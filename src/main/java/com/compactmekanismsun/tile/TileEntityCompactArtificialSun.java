@@ -42,11 +42,16 @@ import org.jetbrains.annotations.NotNull;
  * <p>行为完全对齐上游 {@code ArtificialSunMultiblockData}：
  * <ul>
  *   <li>燃料：氢（{@link MekanismChemicals#HYDROGEN}）</li>
- *   <li>产物：能量（{@link #ENERGY_PER_HYDROGEN} FE / mB 氢）+ 氦（{@link MSChemicals#HELIUM}，1:1）</li>
+ *   <li>产物：能量（{@link #ENERGY_PER_HYDROGEN} J / mB 氢）+ 氦（{@link MSChemicals#HELIUM}，1:1）</li>
  *   <li>副作用：燃烧时把世界时间钉在 1000（正午）并关闭下雨，可通过 {@link #sunMode} 开关</li>
  * </ul>
  *
  * <p>数值默认取上游 {@code MSGeneralConfig} 的同名配置默认值，保证「一台顶一个满配多方块」。
+ * 唯一的例外是 {@link #ENERGY_CAPACITY}：上游是 81,920,000,000 J（默认 1 mB/t 下 40 tick 的存量），
+ * 本机改成满档 100 mB/t 跑满 1 秒所需的 4.096 TJ。
+ *
+ * <p><b>能量单位是 J。</b>Mekanism 能量容器内部按 Joule 存，GUI 默认按 FE 显示（{@code J = FE × 2.5}），
+ * 所以界面上的产能 / 存量数字是配置值除以 2.5 之后的读数。
  */
 public class TileEntityCompactArtificialSun extends TileEntityConfigurableMachine {
 
@@ -55,13 +60,13 @@ public class TileEntityCompactArtificialSun extends TileEntityConfigurableMachin
     /** 氦缓存容量默认值（mB，= 256 B）。 */
     public static final long WASTE_CAPACITY = 256_000L;
     /**
-     * 内部能量缓存默认值（FE）。
+     * 内部能量缓存默认值（J）。
      *
-     * <p>= 100 mB/t × 2,048,000,000 FE/mB × 20 tick = 4.096 T，即默认满档 1 秒的产出。
+     * <p>= 100 mB/t × 2,048,000,000 J/mB × 20 tick = 4.096 TJ（= 1.6384 TFE），即默认满档 1 秒的产出。
      * 实际容量就是配置里 {@code energyCapacity} 的值，不做任何自动放大（见 {@link #getEnergyBufferCapacity()}）。
      */
     public static final long ENERGY_CAPACITY = 4_096_000_000_000L;
-    /** 每 mB 氢产出能量的默认值（FE）。 */
+    /** 每 mB 氢产出能量的默认值（J；GUI 按 FE 显示时 ÷2.5 = 819,200,000 FE/mB）。 */
     public static final long ENERGY_PER_HYDROGEN = 2_048_000_000L;
     /** 默认燃烧速率（mB/t），对齐上游 sunDefaultBurnRate。 */
     public static final double DEFAULT_BURN_RATE = 1.0;
@@ -349,7 +354,7 @@ public class TileEntityCompactArtificialSun extends TileEntityConfigurableMachin
         return coreTemperature;
     }
 
-    /** 当前每 tick 的产能（FE），供 GUI 的能量信息页显示。 */
+    /** 当前每 tick 的产能（J），供 GUI 的能量信息页显示（该页按 FE 换算）。 */
     public long getOutputPerTick() {
         return (long) (smoothBurnRate * MekExtConfig.GENERAL.energyPerHydrogen.get());
     }

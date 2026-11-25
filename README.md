@@ -38,21 +38,25 @@
 
 ### 数值
 
+**能量单位是 J（Joule），不是 FE。** Mekanism 的能量容器内部一律按 Joule 存，上游配置项填的也是 J；
+界面默认按 FE 显示，换算走 `general.feConversionRate`（默认 **2.5**，即 `J = FE × 2.5`，`1 FE = 2.5 J`）。
+所以配置里填 2,048,000,000，能量信息页上显示的是 819,200,000 FE —— 这是换算，不是数值不符。
+
 | 项 | 默认值 | 配置键 |
 |---|---|---|
 | 氢容量 | 256,000 mB（256 B） | `fuelCapacity` |
 | 氦容量 | 256,000 mB（256 B） | `wasteCapacity` |
-| 每 mB 氢产能 | 2,048,000,000 FE | `energyPerHydrogen` |
-| 内部能量缓存 | `max(4.096T, maxBurnRate × energyPerHydrogen × 20)` | `energyCapacity` |
+| 每 mB 氢产能 | 2,048,000,000 J（= 819,200,000 FE） | `energyPerHydrogen` |
+| 内部能量缓存 | 4,096,000,000,000 J（= 1.6384 T FE），就是配置值本身 | `energyCapacity` |
 | 燃烧速率上限 | 100 mB/t | `maxBurnRate` |
 
-换算成发电量（默认配置）：
+换算成发电量（默认配置，同一行给出两种单位）：
 
-| 燃烧速率 | 输出 |
-|---|---|
-| 1 mB/t（默认） | 2.048 G FE/t |
-| 10 mB/t | 20.48 G FE/t |
-| 100 mB/t（满档） | 204.8 G FE/t |
+| 燃烧速率 | 输出（J） | 界面读数（FE） |
+|---|---|---|
+| 1 mB/t（默认） | 2.048 GJ/t | 819.2 M FE/t |
+| 10 mB/t | 20.48 GJ/t | 8.192 G FE/t |
+| 100 mB/t（满档） | 204.8 GJ/t | 81.92 G FE/t |
 
 氦按 **1 mB 氢 → 1 mB 氦** 产出。
 
@@ -125,7 +129,7 @@ JAVA_HOME=<JDK 21> ./gradlew build
 
 产物：`build/libs/compactmekanismsun-neoforge-1.21.1-0.1.0.jar`
 
-构建需要 `mekanismsun` 的 jar 作为 `compileOnly` 依赖，路径由 `gradle.properties` 的 `mekanismsun_jar` 指定（默认 `../../mekanismsun-1.21.1-1.3.1.jar`，即工作区根目录）。
+构建需要 `mekanismsun` 的 jar 作为 `compileOnly` 依赖，路径由 `gradle.properties` 的 `mekanismsun_jar` 指定（当前 `libs/mekanismsun-1.21.1-1.3.1.jar`，相对 `mcmod/mekext/`；工作区根目录的副本已归档到 `refmods/`）。
 
 ## 许可
 
